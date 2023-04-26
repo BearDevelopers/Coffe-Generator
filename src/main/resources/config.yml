@@ -1,0 +1,4 @@
+generator:
+  name: 'PlaceListener'
+  itens-drops: 10
+  segunds-of-spawn: 2

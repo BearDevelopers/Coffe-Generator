@@ -1,3 +1,6 @@
 name: Coffee-Generator
 version: '${project.version}'
 main: org.coffeegenerator.Coffee_Generator
+commands:
+  generator:
+    description: 'Boa'
