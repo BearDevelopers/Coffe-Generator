@@ -23,47 +23,63 @@ public class onPlaceListener implements Listener {
     public static BukkitTask countdownTask;
     private int countdownSeconds = config.getInt("generator.segunds-of-spawn");
     private long countdown = countdownSeconds * 20L;
+    public boolean set = false;
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
+
         Player p = e.getPlayer();
+
         Block blocks = e.getBlockPlaced();
+
         Location loc = blocks.getLocation();
+
         if (e.getBlockPlaced().getType() == Material.STONE) {
+
             loc.getBlock().setType(Material.DIAMOND_BLOCK);
-            double y = blocks.getY() + 0.5f;
+
+            double y = blocks.getY() + 2.0f;
+
             p.sendMessage(ChatColor.RED + "Bloco colocado!, Gerando itens...");
+
             Location locs = new Location(blocks.getWorld(), blocks.getX(), y, blocks.getZ());
+
             Hologram hologram = Coffee_Generator.holographicDisplaysAPI.createHologram(locs);
+
             Bukkit.getScheduler().runTaskTimer(Coffee_Generator.getInstance(), () -> {
+
+                boolean b = set == true;
+
                 for (int i = 0; i < config.getInt("generator.itens-drops"); i++) {
+
                     loc.getWorld().dropItemNaturally(locs, new ItemStack(Material.DIAMOND_ORE));
+
                 }
+                loc.getWorld().dropItem(locs, new ItemStack(Material.DIAMOND_ORE));
+
+            }, 0L, 20L * config.getInt("generator.segunds-of-spawn"));
+
+            if (set == true) {
+
                 countdownTask = new BukkitRunnable() {
+
                     @Override
                     public void run() {
                         countdown--;
                         if (countdown <= 0) {
                             hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
                             hologram.getLines().appendText("Gerado um novo item!");
-                            countdown = countdownSeconds * 20L;
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                throw new RuntimeException(ex);
-                            }
                             hologram.getLines().clear();
                         } else {
                             countdown = countdownSeconds * 20L;
                             hologram.getLines().clear();
                             hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
-                            hologram.getLines().appendText("Gerando novo item em " + (countdown/20) + " segundos");
+                            hologram.getLines().appendText("Gerando novo item em " + (countdown / 20) + " segundos");
                         }
                     }
                 }.runTaskTimer(Coffee_Generator.getInstance(), 20L, 20L);
-
-                loc.getWorld().dropItem(locs, new ItemStack(Material.DIAMOND_ORE));
-            }, 0L, 20L * config.getInt("generator.segunds-of-spawn"));
+            }
         }
+            
     }
 }
