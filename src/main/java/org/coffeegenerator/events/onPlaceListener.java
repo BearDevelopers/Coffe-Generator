@@ -20,7 +20,7 @@ import org.coffeegenerator.Coffee_Generator;
 public class onPlaceListener implements Listener {
 
     FileConfiguration config = Coffee_Generator.getInstance().getConfig();
-    private BukkitTask countdownTask;
+    public static BukkitTask countdownTask;
     private int countdownSeconds = config.getInt("generator.segunds-of-spawn");
     private long countdown = countdownSeconds * 20L;
 
@@ -47,13 +47,21 @@ public class onPlaceListener implements Listener {
                             hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
                             hologram.getLines().appendText("Gerado um novo item!");
                             countdown = countdownSeconds * 20L;
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            hologram.getLines().clear();
                         } else {
+                            countdown = countdownSeconds * 20L;
                             hologram.getLines().clear();
                             hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
-                            hologram.getLines().appendText("Ira gerar um novo item em " + (countdown/20) + "segundos");
+                            hologram.getLines().appendText("Gerando novo item em " + (countdown/20) + " segundos");
                         }
                     }
                 }.runTaskTimer(Coffee_Generator.getInstance(), 20L, 20L);
+
                 loc.getWorld().dropItem(locs, new ItemStack(Material.DIAMOND_ORE));
             }, 0L, 20L * config.getInt("generator.segunds-of-spawn"));
         }
