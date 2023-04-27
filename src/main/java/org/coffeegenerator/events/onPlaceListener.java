@@ -24,6 +24,8 @@ public class onPlaceListener implements Listener {
     private int countdownSeconds = config.getInt("generator.segunds-of-spawn");
     private long countdown = countdownSeconds * 20L;
     public boolean set = false;
+    Location locs;
+    Hologram hologram = Coffee_Generator.holographicDisplaysAPI.createHologram(locs);;
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
@@ -42,13 +44,9 @@ public class onPlaceListener implements Listener {
 
             p.sendMessage(ChatColor.RED + "Bloco colocado!, Gerando itens...");
 
-            Location locs = new Location(blocks.getWorld(), blocks.getX(), y, blocks.getZ());
-
-            Hologram hologram = Coffee_Generator.holographicDisplaysAPI.createHologram(locs);
+            locs = new Location(blocks.getWorld(), blocks.getX(), y, blocks.getZ());
 
             Bukkit.getScheduler().runTaskTimer(Coffee_Generator.getInstance(), () -> {
-
-                boolean b = set == true;
 
                 for (int i = 0; i < config.getInt("generator.itens-drops"); i++) {
 
@@ -59,27 +57,25 @@ public class onPlaceListener implements Listener {
 
             }, 0L, 20L * config.getInt("generator.segunds-of-spawn"));
 
-            if (set == true) {
+        }
 
-                countdownTask = new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-                        countdown--;
-                        if (countdown <= 0) {
-                            hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
-                            hologram.getLines().appendText("Gerado um novo item!");
-                            hologram.getLines().clear();
-                        } else {
-                            countdown = countdownSeconds * 20L;
-                            hologram.getLines().clear();
-                            hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
-                            hologram.getLines().appendText("Gerando novo item em " + (countdown / 20) + " segundos");
-                        }
+        public void onHologram () {
+            Bukkit.getScheduler().runTaskTimer()Coffee_Generator.getInstance(), () -> {
+                @Override
+                public void run () {
+                    countdown--;
+                    if (countdown <= 0) {
+                        hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
+                        hologram.getLines().appendText("Gerado um novo item!");
+                        hologram.getLines().clear();
+                    } else {
+                        countdown = countdownSeconds * 20L;
+                        hologram.getLines().clear();
+                        hologram.getLines().appendItem(new ItemStack(Material.DIAMOND_ORE));
+                        hologram.getLines().appendText("Gerando novo item em " + (countdown / 20) + " segundos");
                     }
-                }.runTaskTimer(Coffee_Generator.getInstance(), 20L, 20L);
+                }
             }
         }
-            
     }
 }
