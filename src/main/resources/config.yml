@@ -2,3 +2,5 @@ generator:
   name: 'PlaceListener'
   itens-drops: 10
   segunds-of-spawn: 2
+discord:
+  token: "MTAxNzQyMzE2MDQ2OTEwNjc2OQ.GEjrNj.U-KTv6uWebFaHl05NLSeq7sMM9dusF8lmhg0M4"
